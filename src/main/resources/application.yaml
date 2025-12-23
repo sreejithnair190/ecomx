@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ecomx-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecomx
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
