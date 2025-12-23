@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.List;
 import java.util.Objects;
 
+@RestControllerAdvice
 public class GlobalExceptionAdvice {
     private ResponseEntity<ApiResponse<?>> buildApiErrorResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(new ApiResponse<>(apiError), apiError.getStatus());
