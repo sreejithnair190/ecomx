@@ -1,5 +1,6 @@
 package me.sreejithnair.ecomx_api.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -11,11 +12,13 @@ public class SignUpDto {
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    private String first_name;
+    @JsonProperty("first_name")
+    private String firstName;
 
     @NotBlank(message = "Last name is required")
     @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    private String last_name;
+    @JsonProperty("last_name")
+    private String lastName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address")
@@ -28,4 +31,11 @@ public class SignUpDto {
             message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
     )
     private String password;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+            regexp = "^\\+?[1-9]\\d{6,14}$",
+            message = "Please provide a valid phone number (7-15 digits, optional + prefix)"
+    )
+    private String phone;
 }

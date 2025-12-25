@@ -3,6 +3,8 @@ spring:
     import: optional:file:.env[.properties]
   application:
     name: ecomx-api
+  rabbitmq:
+    addresses: ${RABBITMQ_URL}
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -33,4 +35,6 @@ logging:
     org.flywaydb: DEBUG
 
 jwt:
-  secret-key: dSAa23snjcaj12sRDWnasjcjsFCAEabcsaj1uv89890RDEQbicasyivyuVUV
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiry: ${JWT_ACCESS_TOKEN_EXPIRY}
+  refresh-token-expiry: ${JWT_REFRESH_TOKEN_EXPIRY}

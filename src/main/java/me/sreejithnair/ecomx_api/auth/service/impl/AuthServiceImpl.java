@@ -7,12 +7,15 @@ import me.sreejithnair.ecomx_api.auth.dto.SignUpDto;
 import me.sreejithnair.ecomx_api.auth.service.AuthService;
 import me.sreejithnair.ecomx_api.auth.service.JwtService;
 import me.sreejithnair.ecomx_api.common.exception.ResourceNotFoundException;
+import me.sreejithnair.ecomx_api.event.model.UserCreatedEvent;
+import me.sreejithnair.ecomx_api.event.publisher.UserEventPublisher;
 import me.sreejithnair.ecomx_api.user.entity.Role;
 import me.sreejithnair.ecomx_api.user.entity.User;
 import me.sreejithnair.ecomx_api.user.enums.UserRoles;
 import me.sreejithnair.ecomx_api.user.repository.RoleRepository;
 import me.sreejithnair.ecomx_api.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -33,6 +37,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserEventPublisher userEventPublisher;
+
+    @Value("${jwt.access-token-expiry}")
+    private int accessTokenExpiry;
+
+    @Value("${jwt.refresh-token-expiry}")
+    private int refreshTokenExpiry;
 
     @Override
     @Transactional
@@ -52,6 +63,16 @@ public class AuthServiceImpl implements AuthService {
         userToCreate.getRoles().add(customerRole);
 
         User savedUser = userRepository.save(userToCreate);
+
+        // Publish user created event
+        UserCreatedEvent event = UserCreatedEvent.builder()
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .firstName(savedUser.getFirstName())
+                .lastName(savedUser.getLastName())
+                .createdAt(Instant.now())
+                .build();
+        userEventPublisher.publishUserRegistered(event);
 
         return generateAuthTokens(savedUser);
     }
@@ -86,8 +107,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private AuthTokenDto generateAuthTokens(User user) {
-        String accessToken = jwtService.generateToken(user, 10);
-        String refreshToken = jwtService.generateToken(user, 1440);
+        String accessToken = jwtService.generateToken(user, accessTokenExpiry);
+        String refreshToken = jwtService.generateToken(user, refreshTokenExpiry);
 
         return AuthTokenDto.builder()
                 .accessToken(accessToken)
