@@ -78,7 +78,7 @@ public class UserEventConsumer {
 
         for (User admin : admins) {
             try {
-                emailService.sendHtmlEmail(admin.getEmail(), "New User Registered - " + event.getEmail(), "admin-new-user", variables);
+                emailService.sendHtmlEmail(admin.getEmail(), "New User Registered - " + event.getEmail(), "admin/admin-new-user", variables);
                 log.info("Admin notification sent to: {}", admin.getEmail());
             } catch (MessagingException e) {
                 log.error("Failed to send admin notification to {}: {}", admin.getEmail(), e.getMessage());
