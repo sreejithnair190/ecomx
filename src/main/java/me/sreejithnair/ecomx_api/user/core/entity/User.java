@@ -1,8 +1,9 @@
-package me.sreejithnair.ecomx_api.user.entity;
+package me.sreejithnair.ecomx_api.user.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import me.sreejithnair.ecomx_api.user.enums.UserStatus;
+import me.sreejithnair.ecomx_api.user.core.enums.UserStatus;
+import me.sreejithnair.ecomx_api.user.role.entity.Role;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;

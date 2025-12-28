@@ -1,4 +1,4 @@
-package me.sreejithnair.ecomx_api.user.entity;
+package me.sreejithnair.ecomx_api.user.role.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -7,7 +7,7 @@ import me.sreejithnair.ecomx_api.asset.entity.Asset;
 import me.sreejithnair.ecomx_api.asset.repository.AssetRepository;
 import me.sreejithnair.ecomx_api.asset.service.AssetService;
 import me.sreejithnair.ecomx_api.common.exception.ResourceNotFoundException;
-import me.sreejithnair.ecomx_api.user.entity.User;
+import me.sreejithnair.ecomx_api.user.core.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

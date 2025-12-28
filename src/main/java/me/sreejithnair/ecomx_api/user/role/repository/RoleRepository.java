@@ -1,6 +1,6 @@
-package me.sreejithnair.ecomx_api.user.repository;
+package me.sreejithnair.ecomx_api.user.role.repository;
 
-import me.sreejithnair.ecomx_api.user.entity.Role;
+import me.sreejithnair.ecomx_api.user.role.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

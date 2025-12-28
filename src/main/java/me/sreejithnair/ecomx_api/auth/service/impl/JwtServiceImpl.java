@@ -4,11 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import me.sreejithnair.ecomx_api.auth.service.JwtService;
-import me.sreejithnair.ecomx_api.user.entity.User;
+import me.sreejithnair.ecomx_api.user.core.entity.User;
+import me.sreejithnair.ecomx_api.user.role.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import me.sreejithnair.ecomx_api.user.entity.Role;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;

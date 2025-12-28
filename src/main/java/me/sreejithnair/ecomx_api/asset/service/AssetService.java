@@ -1,7 +1,7 @@
 package me.sreejithnair.ecomx_api.asset.service;
 
 import me.sreejithnair.ecomx_api.asset.dto.AssetResponse;
-import me.sreejithnair.ecomx_api.user.entity.User;
+import me.sreejithnair.ecomx_api.user.core.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

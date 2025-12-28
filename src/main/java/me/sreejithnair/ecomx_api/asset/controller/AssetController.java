@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.sreejithnair.ecomx_api.asset.dto.AssetResponse;
 import me.sreejithnair.ecomx_api.asset.service.AssetService;
 import me.sreejithnair.ecomx_api.common.dto.ApiResponse;
-import me.sreejithnair.ecomx_api.user.entity.User;
+import me.sreejithnair.ecomx_api.user.core.entity.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
