@@ -1,6 +1,7 @@
 package me.sreejithnair.ecomx_api.common.advice;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import me.sreejithnair.ecomx_api.common.dto.ApiError;
 import me.sreejithnair.ecomx_api.common.dto.ApiResponse;
@@ -166,6 +167,16 @@ public class GlobalExceptionAdvice {
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.UNAUTHORIZED)
                 .message("Invalid or expired token")
+                .build();
+        return buildApiErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ApiResponse<?>> handleMessagingException(MessagingException ex) {
+        log.error("Email sending failed: {}", ex.getMessage());
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("Failed to send email")
                 .build();
         return buildApiErrorResponseEntity(apiError);
     }

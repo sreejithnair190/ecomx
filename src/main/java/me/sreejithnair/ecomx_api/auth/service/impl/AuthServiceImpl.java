@@ -12,6 +12,7 @@ import me.sreejithnair.ecomx_api.event.publisher.UserEventPublisher;
 import me.sreejithnair.ecomx_api.user.entity.Role;
 import me.sreejithnair.ecomx_api.user.entity.User;
 import me.sreejithnair.ecomx_api.user.enums.UserRoles;
+import me.sreejithnair.ecomx_api.user.enums.UserStatus;
 import me.sreejithnair.ecomx_api.user.repository.RoleRepository;
 import me.sreejithnair.ecomx_api.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthTokenDto signUp(SignUpDto signUpDto) {
-        Optional<User> existingUser = userRepository.findByEmail(signUpDto.getEmail());
+        Optional<User> existingUser = userRepository.findByEmailAndDeletedAtIsNull(signUpDto.getEmail());
 
         if (existingUser.isPresent()) {
             throw new BadCredentialsException("User with email already exists "+ signUpDto.getEmail());
