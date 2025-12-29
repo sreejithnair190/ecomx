@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User getUserByUserId(Long userId) {
         return userRepository
-                .findByIdAndDeletedAtIsNull(userId)
+                .findByIdWithRoles(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found!"));
     }
 }

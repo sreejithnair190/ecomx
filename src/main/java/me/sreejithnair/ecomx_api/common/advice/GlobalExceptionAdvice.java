@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sreejithnair.ecomx_api.common.dto.ApiError;
 import me.sreejithnair.ecomx_api.common.dto.ApiResponse;
 import me.sreejithnair.ecomx_api.common.exception.ResourceAlreadyDeletedException;
+import me.sreejithnair.ecomx_api.common.exception.ResourceAlreadyExistsException;
 import me.sreejithnair.ecomx_api.common.exception.ResourceNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,6 +48,15 @@ public class GlobalExceptionAdvice {
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(resourceAlreadyDeletedException.getMessage())
+                .build();
+        return buildApiErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<?>> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.CONFLICT)
+                .message(ex.getMessage())
                 .build();
         return buildApiErrorResponseEntity(apiError);
     }

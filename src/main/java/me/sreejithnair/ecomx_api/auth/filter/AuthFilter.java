@@ -49,7 +49,7 @@ public class AuthFilter extends OncePerRequestFilter {
             if (userId != null) {
                 User user = userService.getUserByUserId(userId);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(user, null, null);
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
