@@ -1,13 +1,21 @@
 package me.sreejithnair.ecomx_api.product.service;
 
+import me.sreejithnair.ecomx_api.common.dto.ToggleActiveDto;
 import me.sreejithnair.ecomx_api.product.dto.request.BrandRequestDto;
 import me.sreejithnair.ecomx_api.product.dto.response.BrandResponseDto;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface AdminBrandService {
 
-    List<BrandResponseDto> getAllBrands();
+    Page<BrandResponseDto> getAllBrandsPaginated(
+            Integer page,
+            Integer perPage,
+            String sortBy,
+            String sortDir,
+            Integer isActive,
+            String search
+    );
 
     BrandResponseDto getBrandById(Long id);
 
@@ -16,4 +24,6 @@ public interface AdminBrandService {
     BrandResponseDto updateBrand(Long id, BrandRequestDto brandRequestDto);
 
     void deleteBrand(Long id);
+
+    void changeBrandStatus(Long id, ToggleActiveDto toggleActiveDto);
 }

@@ -1,8 +1,14 @@
 package me.sreejithnair.ecomx_api.product.repository;
 
 import me.sreejithnair.ecomx_api.product.entity.Brand;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +23,14 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     boolean existsBySlug(String slug);
 
     boolean existsByName(String name);
+
+    @EntityGraph(attributePaths = {"logo"})
+    @Query("SELECT b FROM Brand b WHERE " +
+            "(:isActive IS NULL OR b.isActive = :isActive) AND " +
+            "(:search IS NULL OR b.name LIKE %:search%)")
+    Page<Brand> findAllWithFilters(
+            @Param("isActive") Boolean isActive,
+            @Param("search") String search,
+            Pageable pageable
+    );
 }
