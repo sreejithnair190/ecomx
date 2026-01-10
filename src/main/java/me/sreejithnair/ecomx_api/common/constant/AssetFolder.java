@@ -7,6 +7,7 @@ public final class AssetFolder {
     public static final String BRANDS = "/brands";
     public static final String PRODUCTS = "/products";
     public static final String CATEGORIES = "/categories";
+    public static final String CATEGORIES_OG = "/categories/open-graph";
     public static final String REVIEWS = "/reviews";
     public static final String USERS = "/users";
 }

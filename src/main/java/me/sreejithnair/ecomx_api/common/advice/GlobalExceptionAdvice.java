@@ -22,6 +22,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
@@ -187,6 +189,34 @@ public class GlobalExceptionAdvice {
         ApiError apiError = ApiError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message("Failed to send email")
+                .build();
+        return buildApiErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ApiResponse<?>> handleMultipartException(MultipartException ex) {
+        log.error("Failed to parse multipart servlet request: {}", ex.getMessage(), ex);
+        String message = "Failed to process file upload";
+        Throwable cause = ex.getRootCause();
+        if (cause != null && cause.getMessage() != null) {
+            if (cause.getMessage().contains("size")) {
+                message = "File size exceeds the maximum allowed limit";
+            } else {
+                message = cause.getMessage();
+            }
+        }
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(message)
+                .build();
+        return buildApiErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ApiResponse<?>> handleMissingServletRequestPart(MissingServletRequestPartException ex) {
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(String.format("Required part '%s' is missing", ex.getRequestPartName()))
                 .build();
         return buildApiErrorResponseEntity(apiError);
     }
