@@ -11,9 +11,13 @@ import me.sreejithnair.ecomx_api.auth.dto.SignUpDto;
 import me.sreejithnair.ecomx_api.auth.service.AuthService;
 import me.sreejithnair.ecomx_api.common.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
 import static me.sreejithnair.ecomx_api.common.constant.AppConstant.API_VERSION_V1;
+import static me.sreejithnair.ecomx_api.common.constant.AppConstant.REFRESH_TOKEN;
 
 @RestController
 @RequestMapping(API_VERSION_V1 + "/auth")
@@ -30,7 +34,7 @@ public class AuthController {
     ) {
         AuthTokenDto authTokenDto = authService.signUp(signUpDto);
 
-        Cookie cookie = new Cookie("refresh-token", authTokenDto.getRefreshToken());
+        Cookie cookie = new Cookie(REFRESH_TOKEN, authTokenDto.getRefreshToken());
         cookie.setHttpOnly(true);
         httpServletResponse.addCookie(cookie);
 
@@ -45,7 +49,7 @@ public class AuthController {
     ) {
         AuthTokenDto authTokenDto = authService.signIn(signInDto);
 
-        Cookie cookie = new Cookie("refresh-token", authTokenDto.getRefreshToken());
+        Cookie cookie = new Cookie(REFRESH_TOKEN, authTokenDto.getRefreshToken());
         cookie.setHttpOnly(true);
         httpServletResponse.addCookie(cookie);
 
@@ -59,9 +63,15 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthTokenDto>> refreshTokens(String refreshToken) {
+    public ResponseEntity<ApiResponse<AuthTokenDto>> refreshTokens(HttpServletRequest httpServletRequest) {
+        String refreshToken = Arrays.stream(httpServletRequest.getCookies())
+                .filter(cookie -> REFRESH_TOKEN.equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new AuthenticationServiceException("Refresh token not found inside the cookie"));
+
         AuthTokenDto authTokenDto = authService.refreshTokens(refreshToken);
-        return null;
+        return ApiResponse.ok(authTokenDto, "Token Refreshed Successfully!");
     }
 
     @PatchMapping("/verify-email")

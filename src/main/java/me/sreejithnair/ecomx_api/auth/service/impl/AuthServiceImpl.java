@@ -1,5 +1,7 @@
 package me.sreejithnair.ecomx_api.auth.service.impl;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.sreejithnair.ecomx_api.auth.dto.AuthTokenDto;
 import me.sreejithnair.ecomx_api.auth.dto.SignInDto;
@@ -11,12 +13,14 @@ import me.sreejithnair.ecomx_api.event.model.UserCreatedEvent;
 import me.sreejithnair.ecomx_api.event.publisher.UserEventPublisher;
 import me.sreejithnair.ecomx_api.user.core.entity.User;
 import me.sreejithnair.ecomx_api.user.core.repository.UserRepository;
+import me.sreejithnair.ecomx_api.user.core.service.UserService;
 import me.sreejithnair.ecomx_api.user.role.entity.Role;
 import me.sreejithnair.ecomx_api.user.role.enums.UserRoles;
 import me.sreejithnair.ecomx_api.user.role.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Optional;
+
+import static me.sreejithnair.ecomx_api.common.constant.AppConstant.REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserEventPublisher userEventPublisher;
+    private final UserService userService;
 
     @Value("${jwt.access-token-expiry}")
     private int accessTokenExpiry;
@@ -98,7 +106,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthTokenDto refreshTokens(String refreshToken) {
-        return null;
+       Long userId = jwtService.getUserIdFromToken(refreshToken);
+       User user = userService.getUserByUserId(userId);
+       return generateAuthTokens(user);
     }
 
     @Override
