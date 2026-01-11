@@ -13,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static me.sreejithnair.ecomx_api.common.constant.AppConstant.API_VERSION_V1;
+
 @RestController
-@RequestMapping("/api/assets")
+@RequestMapping(API_VERSION_V1 + "/admin/assets")
 @RequiredArgsConstructor
 public class AssetController {
 

@@ -18,7 +18,7 @@ import java.util.List;
 import static me.sreejithnair.ecomx_api.common.constant.AppConstant.API_VERSION_V1;
 
 @RestController
-@RequestMapping(API_VERSION_V1 + "/admin/category")
+@RequestMapping(API_VERSION_V1 + "/admin/categories")
 @RequiredArgsConstructor
 public class AdminCategoryController {
 
@@ -47,15 +47,15 @@ public class AdminCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryDetailResponseDto>> createCategory(@Valid @ModelAttribute CategoryRequestDto request) {
-        CategoryDetailResponseDto category = adminCategoryService.createCategory(request);
+    public ResponseEntity<ApiResponse<CategoryDetailResponseDto>> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto) {
+        CategoryDetailResponseDto category = adminCategoryService.createCategory(categoryRequestDto);
         return ApiResponse.created(category, "Category created successfully!");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryDetailResponseDto>> updateCategory(
             @PathVariable Long id,
-            @Valid @ModelAttribute CategoryRequestDto request
+            @Valid @RequestBody CategoryRequestDto request
     ) {
         CategoryDetailResponseDto category = adminCategoryService.updateCategory(id, request);
         return ApiResponse.ok(category, "Category updated successfully!");
@@ -77,8 +77,8 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteCategory(@PathVariable Long id) {
         adminCategoryService.deleteCategory(id);
-        return ApiResponse.noContent();
+        return ApiResponse.ok("Category deleted successfully");
     }
 }

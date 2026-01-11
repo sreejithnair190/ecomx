@@ -18,6 +18,9 @@ import me.sreejithnair.ecomx_api.common.exception.ResourceAlreadyExistsException
 import me.sreejithnair.ecomx_api.common.exception.ResourceNotFoundException;
 import me.sreejithnair.ecomx_api.common.util.Helper;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ import java.util.List;
 
 import static me.sreejithnair.ecomx_api.common.constant.AssetFolder.CATEGORIES;
 import static me.sreejithnair.ecomx_api.common.constant.AssetFolder.CATEGORIES_OG;
+import static me.sreejithnair.ecomx_api.common.constant.CacheNameConstant.CATEGORIES_CACHE;
 import static me.sreejithnair.ecomx_api.common.constant.SortableFields.CATEGORY;
 import static me.sreejithnair.ecomx_api.common.util.Auth.getCurrentUser;
 
@@ -59,6 +63,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CATEGORIES_CACHE, key = "#id")
     public CategoryDetailResponseDto getCategoryById(Long id) {
         Category category = findById(id);
         return toDetailResponse(category);
@@ -66,6 +72,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
+    @CachePut(cacheNames = CATEGORIES_CACHE, key = "#result.id")
     public CategoryDetailResponseDto createCategory(CategoryRequestDto request) {
         // Check if name already exists
         if (categoryRepository.existsByName(request.getName())) {
@@ -86,6 +93,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
+    @CachePut(cacheNames = CATEGORIES_CACHE, key = "#id")
     public CategoryDetailResponseDto updateCategory(Long id, CategoryRequestDto request) {
         Category category = findById(id);
         
@@ -108,6 +116,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CATEGORIES_CACHE, key = "#id")
     public void deleteCategory(Long id) {
         Category category = findById(id);
         categoryRepository.delete(category);
@@ -115,6 +124,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CATEGORIES_CACHE, key = "#id")
     public void changeCategoryStatus(Long id, ToggleActiveDto toggleActiveDto) {
         Category category = findById(id);
         category.setIsActive(toggleActiveDto.getIsActive());
@@ -122,6 +132,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CATEGORIES_CACHE, key = "'children:' + #parentId")
     public List<CategorySummaryResponseDto> getChildCategories(Long parentId) {
         findById(parentId); // Verify parent exists
         return categoryRepository.findByParentIdAndIsActiveTrueOrderByDisplayOrderAsc(parentId)
