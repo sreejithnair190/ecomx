@@ -36,6 +36,7 @@ public class AuthController {
 
         Cookie cookie = new Cookie(REFRESH_TOKEN, authTokenDto.getRefreshToken());
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
 
         return ApiResponse.created(authTokenDto, "Signed Up Successfully!");
@@ -51,6 +52,7 @@ public class AuthController {
 
         Cookie cookie = new Cookie(REFRESH_TOKEN, authTokenDto.getRefreshToken());
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
 
         return ApiResponse.ok(authTokenDto, "Signed In Successfully!");
@@ -77,6 +79,7 @@ public class AuthController {
 
         Cookie cookie = new Cookie(REFRESH_TOKEN, authTokenDto.getRefreshToken());
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
 
         return ApiResponse.ok(authTokenDto, "Token Refreshed Successfully!");
